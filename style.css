@@ -26,6 +26,8 @@
 
   --r-card: 16px;
   --tabbar-h: 72px;
+  --app-w: 460px;      /* the app never gets wider than a large phone */
+  --surround: #E4E8DF; /* what fills a desktop screen either side of it */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,6 +46,7 @@
     --ink:     #EDF0E8;
     --ink-2:   #C2C8BC;
     --muted:   #8B937F;
+    --surround: #0B0D07;
   }
 }
 
@@ -80,9 +83,23 @@ button { border: 0; background: none; cursor: pointer; padding: 0; }
 
 /* ---------- screens ---------- */
 
+/* The app is phone-shaped on purpose. On a wide screen it stays a
+   phone-width column in the middle instead of stretching across the
+   monitor — so the desktop preview matches what you get on Android. */
 #screens {
   position: fixed;
   inset: 0 0 calc(var(--tabbar-h) + env(safe-area-inset-bottom)) 0;
+  max-width: var(--app-w);
+  margin-inline: auto;
+  background: var(--ground);
+}
+
+@media (min-width: 560px) {
+  body { background: var(--surround); }
+  #screens, .tabbar {
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
 }
 
 .screen { display: none; height: 100%; flex-direction: column; }
@@ -275,7 +292,7 @@ button { border: 0; background: none; cursor: pointer; padding: 0; }
 }
 .mealadd:active { background: var(--amber); color: var(--amber-ink); }
 
-.mealbody { padding: 2px 14px; }
+.mealbody { padding: 2px 14px; gap: 0; }
 
 .food {
   display: flex;
@@ -447,8 +464,19 @@ button { border: 0; background: none; cursor: pointer; padding: 0; }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 
-.unitfield { position: relative; display: flex; flex-direction: column; gap: 3px; }
-.unit { font-size: 10px; font-weight: 650; color: var(--muted); padding-left: 3px; }
+/* the unit sits inside the box, like the mockup — not on a line below it */
+.unitfield { position: relative; }
+.unitfield .input { padding-right: 58px; }
+.unit {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10.5px;
+  font-weight: 650;
+  color: var(--muted);
+  pointer-events: none;
+}
 
 .formerror {
   font-size: 12.5px;
@@ -492,6 +520,8 @@ button { border: 0; background: none; cursor: pointer; padding: 0; }
 .tabbar {
   position: fixed;
   left: 0; right: 0; bottom: 0;
+  max-width: var(--app-w);
+  margin-inline: auto;
   height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--surface);
@@ -536,6 +566,8 @@ button { border: 0; background: none; cursor: pointer; padding: 0; }
 .overlay {
   position: fixed;
   inset: 0;
+  max-width: var(--app-w);
+  margin-inline: auto;
   z-index: 50;
   background: rgba(10, 12, 8, .45);
   display: flex;
